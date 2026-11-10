@@ -8,9 +8,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import tn.pi.qa.PiTestApplication;
 import tn.pi.qa.config.TestProperties;
@@ -33,6 +34,8 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SpringBootTest(classes = PiTestApplication.class)
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
@@ -48,10 +51,16 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     private static final ThreadLocal<WebDriver> DRIVER = new ThreadLocal<>();
     private static final ThreadLocal<String> BROWSER = new ThreadLocal<>();
 
+    /** Every driver ever created, so none is left open at the end of the suite. */
+    private static final Set<WebDriver> ALL_DRIVERS = ConcurrentHashMap.newKeySet();
+
     /**
      * Browser selection order:
      * 1) {@code <parameter name="browser">} in the TestNG XML (cross-browser suite)
      * 2) -Dbrowser=... / pi.browser in application.yml
+     *
+     * The browser is reused by all tests; a new one is created only if none is open
+     * or if the requested browser type changed.
      */
     @BeforeMethod(alwaysRun = true)
     public void setUp(ITestContext ctx) {
@@ -59,27 +68,54 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         if (browser == null || browser.isBlank()) {
             browser = props.browser();
         }
+
+        if (DRIVER.get() != null && !browser.equals(BROWSER.get())) {
+            quitDriver(); // cross-browser suite moved on to another browser
+        }
+        if (DRIVER.get() == null) {
+            WebDriver created = driverFactory.create(browser);
+            DRIVER.set(created);
+            ALL_DRIVERS.add(created);
+        }
         BROWSER.set(browser);
-        DRIVER.set(driverFactory.create(browser));
+        resetBrowserState();
+    }
+
+    /** Gives every test a clean start inside the same window. */
+    private void resetBrowserState() {
+        try {
+            driver().manage().deleteAllCookies(); // e.g. Weglot language choice
+            driver().manage().window().setSize(new Dimension(1440, 1000)); // TC18 shrinks it to mobile size
+        } catch (Exception ignored) {
+        }
     }
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
-        try {
-            result.setAttribute("browser", BROWSER.get());
-            if (result.getStatus() == ITestResult.FAILURE && DRIVER.get() != null) {
-                captureFailure(result);
-            }
-        } finally {
-            if (DRIVER.get() != null) {
-                try {
-                    DRIVER.get().quit();
-                } catch (Exception ignored) {
-                }
-            }
-            DRIVER.remove();
-            BROWSER.remove();
+        result.setAttribute("browser", BROWSER.get());
+        if (result.getStatus() == ITestResult.FAILURE && DRIVER.get() != null) {
+            captureFailure(result);
         }
+        // browser intentionally stays open for the next test
+    }
+
+    /** Closes the browser once all tests of the <test> block (or class run from the IDE) are done. */
+    @AfterTest(alwaysRun = true)
+    public void closeBrowserAfterTests() {
+        quitDriver();
+    }
+
+    private void quitDriver() {
+        WebDriver d = DRIVER.get();
+        if (d != null) {
+            try {
+                d.quit();
+            } catch (Exception ignored) {
+            }
+            ALL_DRIVERS.remove(d);
+        }
+        DRIVER.remove();
+        BROWSER.remove();
     }
 
     /** IDE runners may skip suite callbacks when launching a test class or method directly. */
@@ -88,9 +124,16 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         tn.pi.qa.report.HtmlReporter.writeTestContextReport(context);
     }
 
-    /** Suite hook keeps Maven/TestNG suite runs covered as well. */
+    /** Suite hook keeps Maven/TestNG suite runs covered; also closes any browser still open. */
     @AfterSuite(alwaysRun = true)
     public void generateExecutionReport(ITestContext context) {
+        ALL_DRIVERS.forEach(d -> {
+            try {
+                d.quit();
+            } catch (Exception ignored) {
+            }
+        });
+        ALL_DRIVERS.clear();
         tn.pi.qa.report.HtmlReporter.writeSuiteReport(context.getSuite());
     }
 
