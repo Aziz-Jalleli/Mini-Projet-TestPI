@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Single-browser suite. Browser comes from -Dbrowser=chrome|firefox|edge (default: chrome). -->
+<suite name="PI.TN - Suite fonctionnelle" verbose="1">
+  <listeners>
+    <listener class-name="tn.pi.qa.report.HtmlReporter"/>
+  </listeners>
+  <test name="PI.TN">
+    <classes>
+      <class name="tn.pi.qa.tests.PiSeleniumTests"/>
+    </classes>
+  </test>
+</suite>

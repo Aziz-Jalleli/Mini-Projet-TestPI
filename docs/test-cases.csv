@@ -1,0 +1,66 @@
+﻿"ID","Fonction","Ce que vérifie le test","Préparation et données","Étapes détaillées","Résultat attendu","Méthode automatisée","Statut"
+"TC01","Recherche","Vérifier que la recherche du site renvoie des résultats pour des sujets connus.","Accueil du site accessible en français. Données : fichier search-terms.csv, 3 recherches (Génie Industriel, admission, Mécatronique) et le mot attendu associé à chacune.","1) Ouvrir l’accueil.
+2) Cliquer sur l’icône de recherche.
+3) Saisir le terme indiqué dans la ligne CSV.
+4) Appuyer sur Entrée.","La page de résultats s’ouvre. Son texte visible contient le mot attendu associé à la recherche.","tc01_searchForCourse — 3 lignes de données","Non exécuté"
+"TC02","Recherche","Vérifier qu’un résultat de recherche mène à la page de la formation choisie.","Accueil accessible. Recherche : Génie Industriel. Résultat attendu : page /course/genie-industriel/.","1) Rechercher « Génie Industriel ».
+2) Cliquer sur le résultat portant ce nom.
+3) Attendre le chargement de la page.","L’adresse contient /course/genie-industriel/ et le contenu visible mentionne Génie Industriel.","tc02_openCourseFromSearchResults","Non exécuté"
+"TC03","Recherche","Vérifier que la recherche accepte les accents et les mots français.","Accueil accessible. Terme : « ingénieur privée ».","1) Ouvrir la recherche du site.
+2) Saisir « ingénieur privée ».
+3) Appuyer sur Entrée.","La page de résultats s’ouvre et son contenu visible contient « ingénieur ».","tc03_searchWithAccents","Non exécuté"
+"TC04","Recherche","Vérifier le retour du site quand la recherche ne trouve rien.","Accueil accessible. Terme improbable : zz-codex-no-match-739184.","1) Ouvrir la recherche.
+2) Saisir le terme improbable.
+3) Valider la recherche.
+4) Lire le message affiché.","La page reste une page de résultats et affiche un message indiquant qu’aucun résultat n’a été trouvé.","tc04_searchWithoutMatches","Non exécuté"
+"TC05","Recherche","Vérifier qu’une seconde recherche fonctionne après le retour à l’accueil.","Nouvelle session de navigateur. Termes successifs : admission, puis Génie Industriel.","1) Rechercher « admission ».
+2) Cliquer sur le logo pour revenir à l’accueil.
+3) Rechercher « Génie Industriel ».","La deuxième page de résultats correspond à Génie Industriel et contient le mot attendu.","tc05_searchAgainFromHome","Non exécuté"
+"TC06","Navigation","Vérifier que le menu Formations mène au diplôme d’Architecte.","Accueil accessible en vue ordinateur. Menu Formations visible.","1) Ouvrir l’accueil.
+2) Survoler Formations.
+3) Cliquer sur Diplôme National d’Architecte.","L’adresse contient /course/diplome-national-darchitecte/ et le contenu visible mentionne Architecte.","tc06_openArchitectureFromMenu","Non exécuté"
+"TC07","Navigation","Vérifier que le sous-menu Formations ouvre Admission.","Accueil accessible en vue ordinateur.","1) Ouvrir l’accueil.
+2) Survoler Formations.
+3) Cliquer sur Admission.","L’adresse contient /admission/ et la page affiche des informations d’admission.","tc07_openAdmissionFromMenu","Non exécuté"
+"TC08","Navigation","Vérifier que le menu permet d’ouvrir Cycle préparatoire.","Accueil accessible en vue ordinateur.","1) Ouvrir l’accueil.
+2) Survoler Formations.
+3) Cliquer sur Cycle préparatoire.","L’adresse contient /course/cycle-preparatoire/ et le contenu visible mentionne Cycle préparatoire.","tc08_openPreparatoryCycleFromMenu","Non exécuté"
+"TC09","Navigation","Vérifier l’accès au programme Génie Industriel dans un sous-menu imbriqué.","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Cycle Ingénieur.
+3) Cliquer sur Génie Industriel.","L’adresse contient /course/genie-industriel/ et le contenu visible mentionne Génie Industriel.","tc09_openGenieIndustrielFromMenu","Non exécuté"
+"TC10","Navigation","Vérifier l’accès au programme Mécatronique dans un sous-menu imbriqué.","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Cycle Ingénieur.
+3) Cliquer sur Mécatronique.","L’adresse contient /course/mecatronique/ et le contenu visible mentionne Mécatronique.","tc10_openMecatroniqueFromMenu","Non exécuté"
+"TC11","Navigation","Vérifier l’accès à Licence en Informatique depuis le menu.","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Licences.
+3) Cliquer sur Licence en Informatique.","L’adresse contient /course/licence-en-informatique/ et le contenu visible mentionne Informatique.","tc11_openLicenceInformatiqueFromMenu","Non exécuté"
+"TC12","Navigation","Vérifier l’accès au programme Informatique, Réseaux et Multimédia (IRM).","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Cycle Ingénieur.
+3) Cliquer sur Informatique, Réseaux et Multimédia (IRM).","L’adresse contient /course/informatique-reseaux-et-multimedia et le contenu visible mentionne Multimédia.","tc12_openIrmFromMenu","Non exécuté"
+"TC13","Navigation","Vérifier l’accès au Master en ingénierie du logiciel depuis le menu.","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Masters Professionnels.
+3) Cliquer sur Master en ingénierie du logiciel.","L’adresse contient /course/master-genie-logiciel-en-ligne/ et le contenu visible mentionne Logiciel.","tc13_openSoftwareEngineeringMasterFromMenu","Non exécuté"
+"TC14","Navigation","Vérifier l’accès à Master Data Science depuis le menu.","Accueil accessible en vue ordinateur.","1) Survoler Formations.
+2) Survoler Masters Professionnels.
+3) Cliquer sur Master Data Science.","L’adresse contient /course/data-science/ et la page mentionne Data Science.","tc14_openDataScienceFromMenu","Non exécuté"
+"TC15","Navigation","Vérifier l’accès au Guide de l’étudiant depuis Vie à l’université.","Accueil accessible en vue ordinateur.","1) Survoler Vie à l’université.
+2) Cliquer sur Guide de l’étudiant.","L’adresse contient /guide-de-letudiant/ et le contenu visible mentionne l’étudiant.","tc15_openStudentGuideFromMenu","Non exécuté"
+"TC16","Navigation","Vérifier l’accès au calendrier académique depuis le menu étudiant.","Accueil accessible en vue ordinateur.","1) Survoler Vie à l’université.
+2) Cliquer sur Calendrier académique.","L’adresse contient /calendrier-academique/ et la page affiche le calendrier académique.","tc16_openAcademicCalendarFromMenu","Non exécuté"
+"TC17","Navigation","Vérifier l’accès aux informations pour les étudiants internationaux.","Accueil accessible en vue ordinateur.","1) Survoler International.
+2) Cliquer sur Étudiants internationaux.","L’adresse contient /international/etudiants-internationaux/ et la page parle des étudiants internationaux.","tc17_openInternationalStudentsFromMenu","Non exécuté"
+"TC18","Navigation mobile","Vérifier que le menu mobile permet d’ouvrir Admission.","Navigateur réglé à 390 × 844 pixels. Accueil accessible.","1) Régler la fenêtre à 390 × 844.
+2) Ouvrir l’accueil.
+3) Appuyer sur le bouton menu.
+4) Choisir Admission.","La page /admission/ s’ouvre dans la fenêtre mobile.","tc18_mobileMenuOpensAdmission","Non exécuté"
+"TC19","Langue","Vérifier le changement de langue vers l’anglais puis le retour au français.","Accueil français accessible. Sélecteur de langue disponible.","1) Ouvrir le sélecteur de langue.
+2) Choisir English.
+3) Vérifier l’adresse /en/.
+4) Ouvrir à nouveau le sélecteur.
+5) Choisir Français.","Le navigateur revient à l’accueil français (adresse racine du site) et son contenu est en français.","tc19_switchLanguageAndReturn","Non exécuté"
+"TC20","Contact","Vérifier que le formulaire refuse un e-mail invalide lorsque les autres champs sont remplis.","Page Contact accessible. Nom : Visiteur Test. Téléphone : +21620000000. Message de test sans donnée personnelle. E-mail invalide provenant de contact-invalid-emails.csv : abc, abc@, @pi.tn ou abc@@pi.tn.","1) Ouvrir Contact.
+2) Saisir Visiteur Test dans Nom & Prénom.
+3) Saisir +21620000000 dans Téléphone.
+4) Saisir le message de test.
+5) Saisir un e-mail invalide du CSV.
+6) Cliquer sur Envoyer.","Le site signale une validation invalide. Le formulaire ne passe pas à l’état envoyé. Aucun e-mail réel n’est transmis.","tc20_contactFormRejectsInvalidEmail — 4 lignes de données","Non exécuté"

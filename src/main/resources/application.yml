@@ -1,0 +1,13 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: off
+
+pi:
+  base-url: https://pi.tn
+  browser: chrome          # chrome | firefox | edge  (override: -Dbrowser=firefox)
+  headless: false          # false = browser window visible (override: -Dheadless=true)
+  timeout-seconds: 15      # explicit wait
+  max-load-seconds: 10     # threshold for the page-load test
+  max-links-to-check: 25   # internal links verified by the broken-link test
+  slow-motion-ms: 800      # pause after each page load so you can watch (0 = full speed)

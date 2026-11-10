@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.5</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>tn.pi.qa</groupId>
+  <artifactId>pi-selenium-tests</artifactId>
+  <version>1.0.0</version>
+  <name>pi-selenium-tests</name>
+  <description>Automated UI tests for https://pi.tn (Spring Boot + Selenium + TestNG)</description>
+
+  <properties>
+    <java.version>17</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <selenium.version>4.25.0</selenium.version>
+    <testng.version>7.10.2</testng.version>
+    <commons-csv.version>1.11.0</commons-csv.version>
+
+    <!-- Overridable from the command line: -Dbrowser=firefox -Dheadless=false -->
+    <browser>chrome</browser>
+    <!-- pause (ms) after each page load so you can follow the test visually -->
+    <slowmo>800</slowmo>
+    <headless>false</headless>
+    <suite>testng.xml</suite>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>${commons-csv.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <!-- TestNG is the runner, keep JUnit 5 out of the way -->
+        <exclusion>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>${suite}</suiteXmlFile>
+          </suiteXmlFiles>
+          <systemPropertyVariables>
+            <pi.browser>${browser}</pi.browser>
+            <pi.headless>${headless}</pi.headless>
+            <pi.slow-motion-ms>${slowmo}</pi.slow-motion-ms>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- mvn test -Pcross-browser : Chrome + Firefox + Edge in parallel -->
+    <profile>
+      <id>cross-browser</id>
+      <properties>
+        <suite>testng-cross-browser.xml</suite>
+      </properties>
+    </profile>
+  </profiles>
+</project>
